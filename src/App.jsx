@@ -56,6 +56,9 @@ function App() {
           <p className="text-slate-400 text-sm">
             © {new Date().getFullYear()} Cuota.
           </p>
+          <p className="text-slate-400 text-sm mt-2">
+            Made with ❤️ for homebuyers everywhere
+          </p>
         </div>
       </footer>
     </div>
