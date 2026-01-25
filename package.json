@@ -11,9 +11,10 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "vite preview"
+    "start": "serve dist -l $PORT"
   },
   "dependencies": {
+    "serve": "^14.2.4",
     "chart.js": "^4.5.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.562.0",
