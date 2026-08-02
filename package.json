@@ -11,7 +11,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "serve dist -l $PORT"
+    "start": "serve dist -l $PORT",
+    "deploy": "vite build && npx wrangler pages deploy dist --project-name cuota --branch main"
   },
   "dependencies": {
     "serve": "^14.2.4",
