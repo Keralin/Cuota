@@ -2,8 +2,10 @@
 
 A modern, free, and open-source mortgage calculator built with React. No signup required, no personal data collected.
 
+**Live at [cuota.pages.dev](https://cuota.pages.dev)**
+
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
-![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## ✨ Features
@@ -32,8 +34,8 @@ A modern, free, and open-source mortgage calculator built with React. No signup 
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/cuota.git
-cd cuota
+git clone https://github.com/Keralin/Cuota.git
+cd Cuota
 
 # Install dependencies
 npm install
@@ -50,10 +52,14 @@ The app will be available at `http://localhost:5173`
 npm run build
 ```
 
+## 🚢 Deployment
+
+Hosted on [Cloudflare Pages](https://cuota.pages.dev). Every push to `main` builds and deploys automatically via GitHub Actions (`.github/workflows/deploy.yml`). Manual deploy: `npm run deploy`.
+
 ## 🛠️ Tech Stack
 
 - **Framework**: React 19
-- **Build Tool**: Vite 6
+- **Build Tool**: Vite 7
 - **Styling**: Tailwind CSS 4
 - **Charts**: Chart.js + react-chartjs-2
 - **Icons**: Lucide React
