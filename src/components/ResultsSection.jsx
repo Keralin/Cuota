@@ -4,23 +4,24 @@ import { Line, Bar } from 'react-chartjs-2';
 import clsx from 'clsx';
 import { ArrowDownCircle, Banknote, Building2, Landmark, FileText, Briefcase, Save } from 'lucide-react';
 import ComparatorSection from './ComparatorSection';
+import { useLanguage } from '../i18n/LanguageContext';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend, Filler);
 
 const ResultsSection = ({ results, data, saveOffer, savedOffers, removeOffer }) => {
-  const formatCurrency = (val) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(val);
+  const { t, formatCurrency } = useLanguage();
 
 
   // Prepare chart data
   const chartData = useMemo(() => {
-    const labels = results.schedule.map(y => `Año ${y.year}`);
+    const labels = results.schedule.map(y => t('chart.year', { n: y.year }));
     const remainingBalance = results.schedule.map(y => y.remainingBalance);
     
     return {
       labels,
       datasets: [
         {
-          label: 'Pendiente',
+          label: t('chart.outstanding'),
           data: remainingBalance,
           borderColor: 'rgb(99, 102, 241)', // Indigo 500
           backgroundColor: 'rgba(99, 102, 241, 0.1)',
@@ -29,12 +30,12 @@ const ResultsSection = ({ results, data, saveOffer, savedOffers, removeOffer }) 
         },
       ],
     };
-  }, [results.schedule, data]);
+  }, [results.schedule, t]);
 
   // Stacked Bar Data (Amortization Breakdown)
   const breakdownData = useMemo(() => {
     // Aggregate by year is already done in schedule
-    const labels = results.schedule.map(y => `Año ${y.year}`);
+    const labels = results.schedule.map(y => t('chart.year', { n: y.year }));
     const interest = results.schedule.map(y => y.interest);
     const principal = results.schedule.map(y => y.principal);
 
@@ -42,20 +43,20 @@ const ResultsSection = ({ results, data, saveOffer, savedOffers, removeOffer }) 
       labels,
       datasets: [
         {
-          label: 'Intereses',
+          label: t('chart.interest'),
           data: interest,
           backgroundColor: 'rgba(239, 68, 68, 0.7)', // Red 500
           stack: 'Stack 0',
         },
         {
-          label: 'Capital Amortizado',
+          label: t('chart.principal'),
           data: principal,
           backgroundColor: 'rgba(16, 185, 129, 0.7)', // Emerald 500
           stack: 'Stack 0',
         },
       ]
     };
-  }, [results.schedule]);
+  }, [results.schedule, t]);
 
   const chartOptions = {
     responsive: true,
@@ -114,7 +115,7 @@ const ResultsSection = ({ results, data, saveOffer, savedOffers, removeOffer }) 
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-end gap-6">
           <div>
             <div className="flex items-center justify-between mb-1">
-               <p className="text-indigo-200 font-medium uppercase tracking-wide text-sm">Tu cuota mensual</p>
+               <p className="text-indigo-200 font-medium uppercase tracking-wide text-sm">{t('results.monthly')}</p>
             </div>
             <h2 className="text-5xl md:text-6xl font-bold tracking-tight">
               {formatCurrency(results.monthlyPayment).replace('€', '')}
@@ -122,10 +123,10 @@ const ResultsSection = ({ results, data, saveOffer, savedOffers, removeOffer }) 
             </h2>
             <div className="mt-4 flex flex-wrap gap-3">
               <span className="bg-indigo-500/50 px-3 py-1 rounded-full text-sm backdrop-blur-sm border border-indigo-400/30">
-                TAE estimado: {(results.effectiveRate + 0.2).toFixed(2)}%
+                {t('results.apr')}: {(results.effectiveRate + 0.2).toFixed(2)}%
               </span>
               <span className="bg-indigo-500/50 px-3 py-1 rounded-full text-sm backdrop-blur-sm border border-indigo-400/30">
-                TIN: {results.effectiveRate.toFixed(2)}%
+                {t('results.tin')}: {results.effectiveRate.toFixed(2)}%
               </span>
             </div>
           </div>
@@ -135,10 +136,10 @@ const ResultsSection = ({ results, data, saveOffer, savedOffers, removeOffer }) 
                 className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-xl text-sm font-bold backdrop-blur-sm transition-all border border-white/10"
              >
                <Save size={16} />
-               Guardar
+               {t('results.save')}
              </button>
              <div>
-               <div className="text-indigo-200 text-sm mb-1">Total a devolver</div>
+               <div className="text-indigo-200 text-sm mb-1">{t('results.totalRepay')}</div>
                <div className="text-2xl font-semibold">
                  {formatCurrency(results.monthlyPayment * data.years * 12)}
                </div>
@@ -160,35 +161,35 @@ const ResultsSection = ({ results, data, saveOffer, savedOffers, removeOffer }) 
         <div className="bg-white rounded-3xl p-6 shadow-lg border border-slate-100">
            <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
              <Banknote size={20} className="text-slate-400" />
-             Desglose de gastos
+             {t('results.expensesBreakdown')}
            </h3>
            <div className="space-y-4">
              <ExpenseRow 
                 icon={<Building2 size={16} />} 
-                label="Impuestos (ITP)" 
+                label={t('results.itp')} 
                 value={results.expenses.itp} 
                 color="bg-blue-100 text-blue-600"
              />
              <ExpenseRow 
                 icon={<Landmark size={16} />} 
-                label="Notaría" 
+                label={t('results.notary')} 
                 value={results.expenses.notary} 
                 color="bg-amber-100 text-amber-600"
              />
              <ExpenseRow 
                 icon={<FileText size={16} />} 
-                label="Registro" 
+                label={t('results.registry')} 
                 value={results.expenses.registry} 
                 color="bg-purple-100 text-purple-600"
              />
               <ExpenseRow 
                 icon={<Briefcase size={16} />} 
-                label="Gestoría" 
+                label={t('results.management')} 
                 value={results.expenses.management} 
                 color="bg-slate-100 text-slate-600"
              />
              <div className="border-t border-slate-100 pt-3 flex justify-between items-center mt-2">
-               <span className="font-semibold text-slate-600">Total gastos</span>
+               <span className="font-semibold text-slate-600">{t('results.totalExpenses')}</span>
                <span className="font-bold text-slate-800">{formatCurrency(results.expenses.total)}</span>
              </div>
            </div>
@@ -196,24 +197,24 @@ const ResultsSection = ({ results, data, saveOffer, savedOffers, removeOffer }) 
 
         {/* Funds Summary */}
         <div className="bg-white rounded-3xl p-6 shadow-lg border border-slate-100 flex flex-col justify-center">
-            <h3 className="text-lg font-bold text-slate-800 mb-6">Necesitas en total</h3>
+            <h3 className="text-lg font-bold text-slate-800 mb-6">{t('results.needTotal')}</h3>
             <div className="space-y-6">
               <div className="flex justify-between items-center text-slate-500">
-                <span>Entrada (Ahorros)</span>
+                <span>{t('results.downPayment')}</span>
                 <span>{formatCurrency(data.savings)}</span>
               </div>
               <div className="flex justify-between items-center text-slate-500">
-                <span>Gastos e Impuestos</span>
+                <span>{t('results.expensesTaxes')}</span>
                 <span>{formatCurrency(results.expenses.total)}</span>
               </div>
               <div className="p-4 bg-slate-50 rounded-2xl flex justify-between items-center border border-slate-100">
-                 <span className="font-bold text-slate-700">Ahorro necesario</span>
+                 <span className="font-bold text-slate-700">{t('results.savingsNeeded')}</span>
                  <span className="font-bold text-xl text-indigo-600">
                     {formatCurrency(data.savings + results.expenses.total)}
                  </span>
               </div>
               <p className="text-xs text-slate-400 text-center">
-                *Cálculos aproximados según normativa estándar.
+                {t('results.disclaimer')}
               </p>
             </div>
         </div>
@@ -223,7 +224,7 @@ const ResultsSection = ({ results, data, saveOffer, savedOffers, removeOffer }) 
       <div className="grid grid-cols-1 gap-8">
         {/* Balance Chart */}
         <div className="bg-white rounded-3xl p-6 shadow-lg border border-slate-100">
-          <h3 className="text-lg font-bold text-slate-800 mb-6">Evolución Deuda</h3>
+          <h3 className="text-lg font-bold text-slate-800 mb-6">{t('results.debtEvolution')}</h3>
           <div className="h-[400px] w-full">
              <Line data={chartData} options={chartOptions} />
           </div>
@@ -231,7 +232,7 @@ const ResultsSection = ({ results, data, saveOffer, savedOffers, removeOffer }) 
 
         {/* Interest vs Principal Chart (New) */}
         <div className="bg-white rounded-3xl p-6 shadow-lg border border-slate-100">
-          <h3 className="text-lg font-bold text-slate-800 mb-6">Intereses vs Capital</h3>
+          <h3 className="text-lg font-bold text-slate-800 mb-6">{t('results.interestVsPrincipal')}</h3>
           <div className="h-[400px] w-full">
              <Bar data={breakdownData} options={barOptions} />
           </div>
@@ -242,7 +243,7 @@ const ResultsSection = ({ results, data, saveOffer, savedOffers, removeOffer }) 
 };
 
 const ExpenseRow = ({ icon, label, value, color }) => {
-  const formatCurrency = (val) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(val);
+  const { formatCurrency } = useLanguage();
   return (
     <div className="flex justify-between items-center">
       <div className="flex items-center gap-3">

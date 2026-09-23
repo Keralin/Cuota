@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
 import { Home, PiggyBank, Calendar, Percent, CheckCircle, Circle, Plus, Trash2, TrendingUp, TrendingDown } from 'lucide-react';
 import { calculateBonusProfitability } from '../utils/mortgageCalculations';
 import clsx from 'clsx';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, removeBonus, currentEffectiveRate, principal }) => {
-  const formatCurrency = (val) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(val);
+  const { t, formatCurrency } = useLanguage();
 
   return (
     <div className="bg-white rounded-3xl shadow-xl p-6 md:p-8 space-y-8 border border-slate-100">
@@ -22,14 +22,14 @@ const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, re
                 : "text-slate-500 hover:text-indigo-500"
             )}
           >
-            {type === 'fixed' ? 'Fija' : type === 'variable' ? 'Variable' : 'Mixta'}
+            {t(`type.${type}`)}
           </button>
         ))}
       </div>
 
       {/* Property Price */}
       <div className="space-y-4">
-        <label className="text-sm font-medium text-slate-600 block">Precio vivienda</label>
+        <label className="text-sm font-medium text-slate-600 block">{t('input.propertyPrice')}</label>
         <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
            <Home size={20} className="text-indigo-500" />
            <input 
@@ -53,7 +53,7 @@ const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, re
 
       {/* Savings / Down Payment */}
       <div className="space-y-4">
-        <label className="text-sm font-medium text-slate-600 block">Ahorros aportados</label>
+        <label className="text-sm font-medium text-slate-600 block">{t('input.savings')}</label>
         <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
            <PiggyBank size={20} className="text-emerald-500" />
            <input 
@@ -77,7 +77,7 @@ const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, re
 
       {/* Years */}
       <div className="space-y-4">
-        <label className="text-sm font-medium text-slate-600 block">Plazo (años)</label>
+        <label className="text-sm font-medium text-slate-600 block">{t('input.years')}</label>
         <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl border border-slate-100">
            <Calendar size={20} className="text-violet-500" />
            <input 
@@ -86,7 +86,7 @@ const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, re
               onChange={(e) => updateData('years', Number(e.target.value))}
               className="bg-transparent font-bold text-lg w-full focus:outline-none text-slate-800"
            />
-           <span className="text-slate-400 font-medium">años</span>
+           <span className="text-slate-400 font-medium">{t('input.yearsUnit')}</span>
         </div>
         <input 
           type="range" 
@@ -102,7 +102,7 @@ const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, re
       {/* Fixed Period (Mixed Only) */}
       {data.mortgageType === 'mixed' && (
         <div className="space-y-4 animate-fade-in">
-          <label className="text-sm font-medium text-slate-600 block">Periodo Fijo (años)</label>
+          <label className="text-sm font-medium text-slate-600 block">{t('input.fixedPeriod')}</label>
           <div className="flex items-center gap-3 bg-indigo-50 p-3 rounded-xl border border-indigo-100">
              <Calendar size={20} className="text-indigo-500" />
              <input 
@@ -111,7 +111,7 @@ const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, re
                 onChange={(e) => updateData('fixedYears', Number(e.target.value))}
                 className="bg-transparent font-bold text-lg w-full focus:outline-none text-slate-800"
              />
-             <span className="text-slate-400 font-medium">años fijos</span>
+             <span className="text-slate-400 font-medium">{t('input.fixedYearsUnit')}</span>
           </div>
           <input 
             type="range" 
@@ -129,14 +129,14 @@ const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, re
       <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 space-y-4">
         <div className="flex items-center gap-2 mb-2">
           <Percent size={18} className="text-amber-500" />
-          <span className="font-semibold text-slate-700">Intereses</span>
+          <span className="font-semibold text-slate-700">{t('input.interest')}</span>
         </div>
         
         {/* Fixed Part Input */}
         {(data.mortgageType === 'fixed' || data.mortgageType === 'mixed') && (
            <div className="flex justify-between items-center">
              <label className="text-sm text-slate-500">
-                {data.mortgageType === 'mixed' ? 'Tipo Fijo (Inicial)' : 'Tipo Fijo'}
+                {data.mortgageType === 'mixed' ? t('input.fixedRateInitial') : t('input.fixedRate')}
              </label>
              <input 
                type="number" step="0.05" value={data.baseRateFixed}
@@ -153,10 +153,10 @@ const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, re
         {(data.mortgageType === 'variable' || data.mortgageType === 'mixed') && (
            <div className="space-y-2">
              {data.mortgageType === 'mixed' && (
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-wide block">Resto Variable</label>
+                <label className="text-xs font-bold text-slate-400 uppercase tracking-wide block">{t('input.variableRest')}</label>
              )}
              <div className="flex justify-between items-center">
-               <label className="text-sm text-slate-500">Euribor actual</label>
+               <label className="text-sm text-slate-500">{t('input.euribor')}</label>
                <input 
                  type="number" step="0.05" value={data.euribor}
                  onChange={(e) => updateData('euribor', Number(e.target.value))}
@@ -164,7 +164,7 @@ const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, re
                />
              </div>
              <div className="flex justify-between items-center">
-               <label className="text-sm text-slate-500">Diferencial</label>
+               <label className="text-sm text-slate-500">{t('input.spread')}</label>
                <input 
                  type="number" step="0.05" value={data.baseRateVarSpread}
                  onChange={(e) => updateData('baseRateVarSpread', Number(e.target.value))}
@@ -172,7 +172,7 @@ const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, re
                />
              </div>
              <div className="text-right text-xs text-slate-400">
-               Total Variable: <span className="font-bold">{(data.euribor + data.baseRateVarSpread).toFixed(2)}%</span>
+               {t('input.totalVariable')}: <span className="font-bold">{(data.euribor + data.baseRateVarSpread).toFixed(2)}%</span>
              </div>
            </div>
         )}
@@ -181,12 +181,12 @@ const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, re
       {/* Editable Bonuses */}
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider">Bonificaciones</h3>
+          <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider">{t('input.bonuses')}</h3>
           <button 
             onClick={addBonus}
             className="text-xs flex items-center gap-1 text-indigo-600 font-medium hover:bg-indigo-50 px-2 py-1 rounded-lg transition-colors"
           >
-            <Plus size={14} /> Añadir
+            <Plus size={14} /> {t('input.addBonus')}
           </button>
         </div>
         
@@ -223,7 +223,7 @@ const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, re
                     </button>
                     <input 
                       type="text" 
-                      value={bonus.name}
+                      value={bonus.name ?? t(`bonus.${bonus.id}`)}
                       onChange={(e) => updateBonus(index, 'name', e.target.value)}
                       className="bg-transparent text-sm font-medium text-slate-700 w-full focus:outline-none"
                     />
@@ -239,7 +239,7 @@ const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, re
                 {bonus.checked && (
                   <div className={clsx("grid gap-3 pl-8", bonus.id === 'payroll' ? "grid-cols-1" : "grid-cols-2")}>
                      <div>
-                       <label className="text-[10px] text-slate-400 uppercase tracking-wide font-semibold block mb-1">Descuento (%)</label>
+                       <label className="text-[10px] text-slate-400 uppercase tracking-wide font-semibold block mb-1">{t('input.discount')}</label>
                        <input 
                           type="number" step="0.05"
                           value={bonus.discount}
@@ -249,7 +249,7 @@ const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, re
                      </div>
                      {bonus.id !== 'payroll' && (
                        <div>
-                         <label className="text-[10px] text-slate-400 uppercase tracking-wide font-semibold block mb-1">Coste Anual (€)</label>
+                         <label className="text-[10px] text-slate-400 uppercase tracking-wide font-semibold block mb-1">{t('input.annualCost')}</label>
                          <input 
                             type="number" step="10"
                             value={bonus.cost}
@@ -269,10 +269,10 @@ const InputSection = ({ data, updateData, updateBonus, toggleBonus, addBonus, re
                   )}>
                     {analysis.isProfitable ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
                     <span className="font-medium">
-                      {analysis.isProfitable ? "Rentable" : "No rentable"}
+                      {analysis.isProfitable ? t('input.profitable') : t('input.notProfitable')}
                     </span>
                     <span className="opacity-75">
-                      (Neto: {analysis.net > 0 ? '+' : ''}{formatCurrency(analysis.net)})
+                      ({t('input.net')}: {analysis.net > 0 ? '+' : ''}{formatCurrency(analysis.net)})
                     </span>
                   </div>
                 )}

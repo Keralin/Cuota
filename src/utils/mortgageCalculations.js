@@ -1,9 +1,10 @@
 // Default starting bonuses, now fully editable by user
 // isDefault: true means these cannot be deleted (standard in Spanish mortgages)
+// name: null means the translated default name is shown until the user edits it
 export const DEFAULT_BONUSES = [
-  { id: 'payroll', name: 'Nómina', discount: 0.50, cost: 0, checked: false, isDefault: true }, 
-  { id: 'lifeInsurance', name: 'Seguro de vida', discount: 0.30, cost: 300, checked: false, isDefault: true },
-  { id: 'homeInsurance', name: 'Seguro de hogar', discount: 0.20, cost: 200, checked: false, isDefault: true },
+  { id: 'payroll', name: null, discount: 0.50, cost: 0, checked: false, isDefault: true }, 
+  { id: 'lifeInsurance', name: null, discount: 0.30, cost: 300, checked: false, isDefault: true },
+  { id: 'homeInsurance', name: null, discount: 0.20, cost: 200, checked: false, isDefault: true },
 ];
 
 /**

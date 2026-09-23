@@ -3,9 +3,10 @@ import InputSection from './InputSection';
 import ResultsSection from './ResultsSection';
 import ComparatorSection from './ComparatorSection';
 import { calculateMonthlyPayment, calculateEffectiveRate, calculateExpenses, calculateAmortizationSchedule, DEFAULT_BONUSES } from '../utils/mortgageCalculations';
-import { Save } from 'lucide-react';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const MortageCalculator = () => {
+  const { t } = useLanguage();
   // Default values
   const [data, setData] = useState({
     mortgageType: 'fixed', // fixed, variable, mixed
@@ -87,7 +88,7 @@ const MortageCalculator = () => {
   const addBonus = () => {
     setData(prev => ({
       ...prev,
-      bonuses: [...prev.bonuses, { id: Date.now(), name: 'Nueva bonificación', discount: 0.10, cost: 0, checked: true }]
+      bonuses: [...prev.bonuses, { id: Date.now(), name: t('bonus.new'), discount: 0.10, cost: 0, checked: true }]
     }));
   };
 
@@ -100,7 +101,7 @@ const MortageCalculator = () => {
 
   // Offer Saving
   const saveOffer = () => {
-    const name = prompt("Nombre para esta oferta (ej: BBVA Fija):", `Oferta ${savedOffers.length + 1}`);
+    const name = prompt(t('offer.prompt'), t('offer.default', { n: savedOffers.length + 1 }));
     if (name) {
       setSavedOffers([...savedOffers, { id: Date.now(), name, data: { ...data }, results: { ...results } }]);
     }

@@ -1,8 +1,12 @@
 import React from 'react';
 import MortageCalculator from './components/Calculator';
 import { Calculator, Github } from 'lucide-react';
+import clsx from 'clsx';
+import { useLanguage } from './i18n/LanguageContext';
 
 function App() {
+  const { lang, setLang, t } = useLanguage();
+
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-900">
       
@@ -17,6 +21,22 @@ function App() {
               Cuo<span className="text-indigo-600">ta</span>
             </span>
           </div>
+          <div className="flex items-center gap-4">
+          <div role="group" aria-label={t('lang.switch')} className="flex bg-slate-100 p-1 rounded-lg text-xs font-semibold">
+            {['es', 'en'].map((code) => (
+              <button
+                key={code}
+                onClick={() => setLang(code)}
+                aria-pressed={lang === code}
+                className={clsx(
+                  "px-2.5 py-1 rounded-md uppercase transition-colors",
+                  lang === code ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-indigo-500"
+                )}
+              >
+                {code}
+              </button>
+            ))}
+          </div>
           <a
             href="https://github.com/Keralin/cuota"
             target="_blank"
@@ -26,6 +46,7 @@ function App() {
             <Github size={20} />
             <span className="hidden sm:inline">GitHub</span>
           </a>
+          </div>
         </div>
       </header>
 
@@ -36,11 +57,11 @@ function App() {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-50/10"></div>
           <div className="max-w-7xl mx-auto px-4 relative z-10 text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
-              Calcula tu hipoteca <br className="hidden md:block" />
-              <span className="text-indigo-300">sin letra pequeña</span>
+              {t('hero.title')} <br className="hidden md:block" />
+              <span className="text-indigo-300">{t('hero.titleAccent')}</span>
             </h1>
             <p className="text-lg md:text-xl text-indigo-100 max-w-2xl mx-auto leading-relaxed">
-              Sin registro. Sin datos personales. Simula tu cuota hipotecaria con todos los gastos e impuestos detallados al instante.
+              {t('hero.subtitle')}
             </p>
           </div>
         </div>
@@ -57,7 +78,7 @@ function App() {
             © {new Date().getFullYear()} Cuota.
           </p>
           <p className="text-slate-400 text-sm mt-2">
-            Made with ❤️ for homebuyers everywhere
+            {t('footer.love')}
           </p>
         </div>
       </footer>

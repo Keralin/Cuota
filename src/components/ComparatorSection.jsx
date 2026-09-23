@@ -1,9 +1,10 @@
 import React from 'react';
 import { Award, Trash2 } from 'lucide-react';
 import clsx from 'clsx';
+import { useLanguage } from '../i18n/LanguageContext';
 
 const ComparatorSection = ({ savedOffers, removeOffer }) => {
-  const formatCurrency = (val) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(val);
+  const { t, formatCurrency } = useLanguage();
 
   if (savedOffers.length === 0) return null;
 
@@ -30,19 +31,19 @@ const ComparatorSection = ({ savedOffers, removeOffer }) => {
     <div className="bg-white rounded-3xl shadow-xl p-6 md:p-8 space-y-6 border border-slate-100 overflow-hidden">
       <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
         <Award className="text-indigo-500" />
-        Comparador de Ofertas
+        {t('compare.title')}
       </h3>
 
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left">
           <thead>
             <tr className="border-b border-slate-100 text-slate-400 uppercase tracking-wider text-xs">
-              <th className="py-4 px-4 font-semibold">Oferta</th>
-              <th className="py-4 px-4 font-semibold">Tipo</th>
-              <th className="py-4 px-4 font-semibold text-right">Cuota Mensual</th>
-              <th className="py-4 px-4 font-semibold text-right">Interés (TIN)</th>
-              <th className="py-4 px-4 font-semibold text-right">Total Hipoteca</th>
-              <th className="py-4 px-4 font-semibold text-right hidden md:table-cell">Gastos Inicio</th>
+              <th className="py-4 px-4 font-semibold">{t('compare.offer')}</th>
+              <th className="py-4 px-4 font-semibold">{t('compare.type')}</th>
+              <th className="py-4 px-4 font-semibold text-right">{t('compare.monthly')}</th>
+              <th className="py-4 px-4 font-semibold text-right">{t('compare.rate')}</th>
+              <th className="py-4 px-4 font-semibold text-right">{t('compare.loanTotal')}</th>
+              <th className="py-4 px-4 font-semibold text-right hidden md:table-cell">{t('compare.upfront')}</th>
               <th className="py-4 px-4"></th>
             </tr>
           </thead>
@@ -67,16 +68,16 @@ const ComparatorSection = ({ savedOffers, removeOffer }) => {
                       <div className="font-bold text-slate-700">{offer.name}</div>
                       {isBestOption && (
                         <span className="inline-block mt-1 text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
-                          Mejor Opción
+                          {t('compare.best')}
                         </span>
                       )}
                    </td>
-                   <td className="py-4 px-4 capitalize text-slate-500">{offer.data.mortgageType === 'mixed' ? 'Mixta' : offer.data.mortgageType === 'fixed' ? 'Fija' : 'Variable'}</td>
+                   <td className="py-4 px-4 capitalize text-slate-500">{t(`type.${offer.data.mortgageType}`)}</td>
                    
                    <td className="py-4 px-4 text-right">
                      <div className={clsx("inline-flex flex-col items-end", isBestPayment && "text-indigo-600 font-bold")}>
                         {formatCurrency(payment)}
-                        {isBestPayment && <span className="text-[10px] bg-indigo-100 px-1.5 rounded text-indigo-700 mt-0.5">Menor Cuota</span>}
+                        {isBestPayment && <span className="text-[10px] bg-indigo-100 px-1.5 rounded text-indigo-700 mt-0.5">{t('compare.lowestPayment')}</span>}
                      </div>
                    </td>
 
@@ -89,7 +90,7 @@ const ComparatorSection = ({ savedOffers, removeOffer }) => {
                         {formatCurrency(loanTotal)}
                       </div>
                       <div className="text-[10px] text-slate-400">
-                        Total {formatCurrency(globalTotal)} (c/ gastos)
+                        {t('compare.withExpenses', { amount: formatCurrency(globalTotal) })}
                       </div>
                    </td>
 
