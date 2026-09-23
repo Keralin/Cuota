@@ -13,6 +13,7 @@ const MortageCalculator = () => {
     propertyPrice: 300000,
     savings: 60000, 
     years: 30,
+    fixedYears: 10, // Mixed only: years at the fixed rate before switching to variable
     baseRateFixed: 2.80,
     baseRateVarSpread: 0.60,
     euribor: 2.50,
@@ -51,7 +52,8 @@ const MortageCalculator = () => {
     const schedule = calculateAmortizationSchedule(principal, {
       initialRate: effectiveInitialRate,
       subsequentRate: effectiveSubsequentRate,
-      fixedYears: rateType === 'mixed' ? data.fixedYears : 0
+      // Clamp so shortening the term never leaves the fixed period covering the whole loan
+      fixedYears: rateType === 'mixed' ? Math.min(data.fixedYears, data.years - 1) : 0
     }, data.years);
 
     setResults({
